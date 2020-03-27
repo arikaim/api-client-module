@@ -1,0 +1,12 @@
+{
+    "title": "REST Api Client",
+    "name": "api",
+    "package-type": "module",
+    "description": "REST Api client.",
+    "version": "1.0.0",   
+    "require": {
+        "composer": [
+           
+        ]
+    }
+}
