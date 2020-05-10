@@ -3,7 +3,7 @@
 ![GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
 #### Api client drivers
- * Twitter
+ * Github
 
 #### Requirements 
   * PHP 7.1

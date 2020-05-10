@@ -22,6 +22,13 @@ interface ApiFunctionInterface
     public function getMethod();
     
     /**
+     * Set base url
+     *   
+     * @return string
+     */
+    public function getBaseUrl();
+
+    /**
      * Get requiets url path
      *
      * @return string
@@ -34,4 +41,50 @@ interface ApiFunctionInterface
      * @return array
      */
     public function getParams();
+
+    /**
+     * Set params
+     *
+     * @param array $params
+     * @return void
+     */
+    public function setParams($params);
+
+    /**
+     * Create requets url from path and params
+     *
+     * @return string
+     */
+    public function buildRequestUrl();
+
+    /**
+     *  Set request headers
+     *
+     * @param array $heades
+     * @return void
+     */
+    public function setHeaders(array $heades);
+
+    /**
+     * Add request header
+     *
+     * @param string $header
+     * @return void
+     */
+    public function addHeader($header);
+
+    /**
+     * Call api function
+     *`   
+     * @param array $params|null
+     * @return mixed|false
+    */
+    public function call(array $params = null);
+
+    /**
+     * Initialize api funciton
+     *
+     * @return void
+     */
+    public function init();
 }

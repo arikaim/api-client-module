@@ -10,9 +10,11 @@
 namespace Arikaim\Modules\Api;
 
 use Arikaim\Modules\Api\Interfaces\ApiClientInterface;
+use Arikaim\Modules\Api\Interfaces\ApiFunctionInterface;
+use Arikaim\Core\Utils\Factory;
 
 /**
- * Abstract Api client module class
+ * Api client class
  */
 abstract class AbstractApiClient implements ApiClientInterface
 {
@@ -38,54 +40,72 @@ abstract class AbstractApiClient implements ApiClientInterface
     protected $baseUrl;
 
     /**
-     * Requets params
-     *
-     * @var array
-     */
-    protected $parameters;
-
-    /**
-     * Create request authorization header
-     *
-     * @return string
-    */
-    abstract public function createAuthHeader();
-
-    /**
      * Constructor
      */
-    public function __construct($oauthToken, $oauthTokenSecret)
+    public function __construct()
     {           
-        $this->oauthToken = $oauthToken;
-        $this->oauthTokenSecret = $oauthTokenSecret;
-        $this->parameters = [];
+        $this->oauthToken = null;
+        $this->oauthTokenSecret = null;
     }
 
-    public funciton request()
-    {
+    /**
+     * Get authorization headers or false if api not uses header for auth
+     *
+     * @return array|false
+    */
+    abstract public function getAuthHeaders();
 
+    /**
+     * Api function classes namespace
+     *
+     * @return string
+     */
+    public function getFunctionsNamespace()
+    {
+        return Factory::getClassNamespace(static::class) . "\\Functions\\";
+    }
+
+    /**
+     * Create api function object 
+     *
+     * @param string $apiFunctionClass
+     * @return ApiFunctionInterface|false
+     */
+    public function createApiFunction($apiFunctionClass)
+    {
+        $class = $this->getFunctionsNamespace() . $apiFunctionClass;
+        $apiFunction = null;
+
+        if (class_exists($class) == true) {
+            $apiFunction = new $class($this->getBaseUrl(),$this->getAuthHeaders());
+        }
+
+        return (is_object($apiFunction) == false) ? false : $apiFunction;        
+    }  
+
+    /**
+     * Call api function
+     *
+     * @param string|object $name Api funciton class name or object ref
+     * @param array $params
+     * @return mixed|false
+    */
+    public function call($name, array $params = null)
+    {
+        $apiFunction = ($name instanceof ApiFunctionInterface) ? $name : $this->createApiFunction($name,$params);
+        
+        return ($apiFunction === false) ? false : $apiFunction->call($params);           
     }
     
     /**
-     * Create query request params
+     * Set OAuth token
      *
+     * @param string $url
      * @return void
      */
-    public function createQueryParams()
+    public function setOauthToken($token)
     {
-        return http_build_query($this->$parameters);
-    }
-
-    /**
-     * Set api request param
-     *
-     * @param string $name
-     * @param string $value
-     * @return void
-     */
-    public function setParam($name, $value)
-    {
-        $this->parameters[$name] = $value;
+        $this->oauthToken = $token;
     }
 
     /**

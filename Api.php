@@ -9,7 +9,6 @@
 */
 namespace Arikaim\Modules\Api;
 
-use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\Extension\Module;
 
 /**
@@ -18,29 +17,21 @@ use Arikaim\Core\Extension\Module;
 class Api extends Module
 {
     /**
-     * Image menagaer class
-     *
-     * @var ImageManager
-     */
-    private $manager;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        // module details
-        $this->setServiceName('api');       
     }
 
-
     /**
-     * Get ImageManager instance
+     * Install module
      *
-     * @return ImageManager
+     * @return void
      */
-    public function getManager()
+    public function install()
     {
-        return $this->manager;
+        $this->installDriver('Arikaim\\Modules\\Api\\Github\\GitHubApiDriver');
+      
+        return true;
     }
 }
