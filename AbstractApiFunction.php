@@ -81,7 +81,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     /**
      * Call api function
      *`   
-     * @param array $params|null
+     * @param array|null $params
      * @return mixed|false
     */
     public function call(array $params = null)
@@ -143,6 +143,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     public function method($method)
     {
         $this->method = $method;
+
         return $this;
     }
 
@@ -155,6 +156,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     public function path($path)
     {
         $this->path = $path;
+
         return $this;
     }
 
@@ -168,6 +170,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     public function param($name, $value)
     {
         $this->parameters[$name] = $value;
+
         return $this;
     }
 
@@ -229,7 +232,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     public function buildRequestUrl()
     {       
         $queryParams = $this->createQueryParams();
-        $queryParams = (empty($queryParams) == false) ? "?" . $queryParams : '';
+        $queryParams = (empty($queryParams) == false) ? '?' . $queryParams : '';
         
         return $this->getUrlPath() . $queryParams;
     }

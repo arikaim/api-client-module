@@ -23,14 +23,14 @@ abstract class AbstractApiClient implements ApiClientInterface
      *
      * @var string
     */
-    protected $oauthToken;
+    protected $oauthToken = null;
     
     /**
      * OAuth token secret
      *
      * @var string
     */
-    protected $oauthTokenSecret;
+    protected $oauthTokenSecret = null;
 
     /**
      * Api request base url
@@ -43,9 +43,7 @@ abstract class AbstractApiClient implements ApiClientInterface
      * Constructor
      */
     public function __construct()
-    {           
-        $this->oauthToken = null;
-        $this->oauthTokenSecret = null;
+    {                  
     }
 
     /**
@@ -74,12 +72,8 @@ abstract class AbstractApiClient implements ApiClientInterface
     public function createApiFunction($apiFunctionClass)
     {
         $class = $this->getFunctionsNamespace() . $apiFunctionClass;
-        $apiFunction = null;
-
-        if (\class_exists($class) == true) {
-            $apiFunction = new $class($this->getBaseUrl(),$this->getAuthHeaders());
-        }
-
+        $apiFunction = (\class_exists($class) == true) ? new $class($this->getBaseUrl(),$this->getAuthHeaders()) : null;
+         
         return (\is_object($apiFunction) == false) ? false : $apiFunction;        
     }  
 
