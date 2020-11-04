@@ -76,11 +76,11 @@ abstract class AbstractApiClient implements ApiClientInterface
         $class = $this->getFunctionsNamespace() . $apiFunctionClass;
         $apiFunction = null;
 
-        if (class_exists($class) == true) {
+        if (\class_exists($class) == true) {
             $apiFunction = new $class($this->getBaseUrl(),$this->getAuthHeaders());
         }
 
-        return (is_object($apiFunction) == false) ? false : $apiFunction;        
+        return (\is_object($apiFunction) == false) ? false : $apiFunction;        
     }  
 
     /**

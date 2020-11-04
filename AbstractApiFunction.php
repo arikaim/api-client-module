@@ -86,12 +86,12 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     */
     public function call(array $params = null)
     {
-        $this->parameters = empty($params) ? $this->parameters : array_merge($this->parameters,$params);
+        $this->parameters = empty($params) ? $this->parameters : \array_merge($this->parameters,$params);
 
         $url = $this->getBaseUrl() . $this->buildRequestUrl();
         $response = Curl::request($url,$this->getMethod(),null,$this->headers);
 
-        return (Utils::isJson($response) == true) ? json_decode($response,true) : $response;
+        return (Utils::isJson($response) == true) ? \json_decode($response,true) : $response;
     }
 
     /**
@@ -110,7 +110,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function addHeader($header)
     {
-        array_push($this->headers,$header);
+        \array_push($this->headers,$header);
     }
 
     /**
@@ -178,7 +178,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     */
     public function getMethod()
     {
-        return (empty($this->method) == true) ? 'GET' : $this->method;
+        return $this->method ?? 'GET';
     }
     
     /**
@@ -218,7 +218,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function createQueryParams()
     {
-        return http_build_query($this->parameters);
+        return \http_build_query($this->parameters);
     }
 
     /**

@@ -49,9 +49,9 @@ class GitHubApiDriver extends AbstractApiClient implements DriverInterface, ApiC
     public function getAuthHeaders()
     {
         return [
-            "Authorization: token " . $this->oauthToken,
-            "Accept: application/vnd.github.nebula-preview+json",
-            "User-Agent: Arikaim CMS"
+            'Authorization: token ' . $this->oauthToken,
+            'Accept: application/vnd.github.nebula-preview+json',
+            'User-Agent: Arikaim CMS'
         ];
     }
 
