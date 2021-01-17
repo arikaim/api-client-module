@@ -19,28 +19,28 @@ interface ApiFunctionInterface
      *
      * @return string
     */
-    public function getMethod();
+    public function getMethod(): string;
     
     /**
      * Set base url
      *   
      * @return string
      */
-    public function getBaseUrl();
+    public function getBaseUrl(): string;
 
     /**
      * Get requiets url path
      *
      * @return string
      */
-    public function getUrlPath();
+    public function getUrlPath(): string;
     
     /**
      * Get params
      *
      * @return array
      */
-    public function getParams();
+    public function getPathParams(): array;
 
     /**
      * Set params
@@ -48,14 +48,22 @@ interface ApiFunctionInterface
      * @param array $params
      * @return void
      */
-    public function setParams($params);
+    public function setQueryParams(array $params): void;
+
+    /**
+     * Set params
+     *
+     * @param array $params
+     * @return void
+     */
+    public function setPathParams(array $params): void;
 
     /**
      * Create requets url from path and params
      *
      * @return string
      */
-    public function buildRequestUrl();
+    public function buildRequestUrl(): string;
 
     /**
      *  Set request headers
@@ -63,7 +71,7 @@ interface ApiFunctionInterface
      * @param array $heades
      * @return void
      */
-    public function setHeaders(array $heades);
+    public function setHeaders(array $heades): void;
 
     /**
      * Add request header
@@ -71,20 +79,27 @@ interface ApiFunctionInterface
      * @param string $header
      * @return void
      */
-    public function addHeader($header);
+    public function addHeader(string $header): void;
 
     /**
      * Call api function
-     *`   
-     * @param array $params|null
-     * @return mixed|false
-    */
-    public function call(array $params = null);
+     *       
+     * @return ApiCallResponse
+     */
+    public function call();
+
+    /**
+     * Call api function
+     * 
+     * @param string|string $fileName
+     * @return mixed
+     */
+    public function downloadFile(?string $fileName = null);
 
     /**
      * Initialize api funciton
      *
      * @return void
      */
-    public function init();
+    public function init(): void;
 }

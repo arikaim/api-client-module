@@ -12,6 +12,7 @@ namespace Arikaim\Modules\Api;
 use Arikaim\Modules\Api\Interfaces\ApiClientInterface;
 use Arikaim\Modules\Api\Interfaces\ApiFunctionInterface;
 use Arikaim\Core\Utils\Factory;
+use Exception;
 
 /**
  * Api client class
@@ -40,6 +41,13 @@ abstract class AbstractApiClient implements ApiClientInterface
     protected $baseUrl;
 
     /**
+     * Api functions classes namespace
+     *
+     * @var string|null
+     */
+    protected $functionsNamespace = null;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -49,46 +57,81 @@ abstract class AbstractApiClient implements ApiClientInterface
     /**
      * Get authorization headers or false if api not uses header for auth
      *
-     * @return array|false
+     * @return array|null
     */
-    abstract public function getAuthHeaders();
+    abstract public function getAuthHeaders(): ?array;
 
     /**
      * Api function classes namespace
      *
      * @return string
      */
-    public function getFunctionsNamespace()
+    public function getFunctionsNamespace(): string
     {
-        return Factory::getClassNamespace(static::class) . "\\Functions\\";
+        $defaultNamespace = Factory::getClassNamespace(static::class) . "\\Functions\\";
+
+        return $this->functionsNamespace ??$defaultNamespace;
+    }
+
+    /**
+     * Set functions namespace
+     *
+     * @param string $namespace
+     * @return void
+     */
+    public function setFunctionsNamespace(string $namespace): void
+    {
+        $this->functionsNamespace = $namespace;
     }
 
     /**
      * Create api function object 
      *
-     * @param string $apiFunctionClass
-     * @return ApiFunctionInterface|false
+     * @param string $class
+     * @param array|null $queryParams
+     * @param array|null $pathParams 
+     * @throws Exception
+     * @return ApiFunctionInterface|null
      */
-    public function createApiFunction($apiFunctionClass)
+    public function createApiFunction(string $class, ?array $queryParams = null, ?array $pathParams = null)
     {
-        $class = $this->getFunctionsNamespace() . $apiFunctionClass;
-        $apiFunction = (\class_exists($class) == true) ? new $class($this->getBaseUrl(),$this->getAuthHeaders()) : null;
-         
-        return (\is_object($apiFunction) == false) ? false : $apiFunction;        
+        if (\class_exists($class) == false) {
+            $class = $this->getFunctionsNamespace() . $class;
+        }
+      
+        $apiFunction = new $class($this->getBaseUrl(),$this->getAuthHeaders());
+        if (($apiFunction instanceof ApiFunctionInterface) == false) {
+            throw new Exception('Not vlaid api functin class ' . $class);
+          
+            return null;
+        }
+
+        if (\is_array($queryParams) == true) {
+            $apiFunction->setQueryParams($queryParams);
+        }
+        if (\is_array($pathParams) == true) {
+            $apiFunction->setPathParams($pathParams);
+        }
+
+        return $apiFunction;        
     }  
 
     /**
      * Call api function
      *
-     * @param string|object $name Api funciton class name or object ref
-     * @param array $params
-     * @return mixed|false
+     * @param string $class
+     * @param array|null $queryParams
+     * @param array|null $pathParams
+     * @return ApiCallResponse|false
     */
-    public function call($name, array $params = null)
+    public function call(string $class, ?array $queryParams = null, ?array $pathParams = null)
     {
-        $apiFunction = ($name instanceof ApiFunctionInterface) ? $name : $this->createApiFunction($name,$params);
-        
-        return ($apiFunction === false) ? false : $apiFunction->call($params);           
+        $apiFunction = $this->createApiFunction($class,$queryParams,$pathParams);
+        if (empty($apiFunction) == true) {
+            return false;
+        }
+
+        return $apiFunction->call();    
     }
     
     /**

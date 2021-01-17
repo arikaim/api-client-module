@@ -31,7 +31,9 @@ class Api extends Module
     public function install()
     {
         $this->installDriver('Arikaim\\Modules\\Api\\Github\\GitHubApiDriver');
-      
+        $this->installDriver('Arikaim\\Modules\\Api\\Envato\\EnvatoApiDriver');
+        $this->installDriver('Arikaim\\Modules\\Api\\Google\\YoutubeApiDriver');
+
         return true;
     }
 }

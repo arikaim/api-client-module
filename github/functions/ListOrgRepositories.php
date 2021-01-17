@@ -22,7 +22,7 @@ class ListOrgRepositories extends AbstractApiFunction implements ApiFunctionInte
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         $this
             ->method('GET')

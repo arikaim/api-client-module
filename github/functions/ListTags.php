@@ -22,7 +22,7 @@ class ListTags extends AbstractApiFunction implements ApiFunctionInterface
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         $this
             ->method('GET')

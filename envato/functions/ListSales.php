@@ -7,15 +7,15 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Api\Github\Functions;
+namespace Arikaim\Modules\Api\Envato\Functions;
 
 use Arikaim\Modules\Api\AbstractApiFunction;
 use Arikaim\Modules\Api\Interfaces\ApiFunctionInterface;
 
 /**
- * DownloadRepository api call
+ * List sales api call
  */
-class DownloadRepository extends AbstractApiFunction implements ApiFunctionInterface
+class ListSales extends AbstractApiFunction implements ApiFunctionInterface
 {
     /**
      * Initialize api funciton
@@ -24,9 +24,8 @@ class DownloadRepository extends AbstractApiFunction implements ApiFunctionInter
      */
     public function init(): void
     {
-        $this->addHeader('Accept: application/vnd.github.v3.raw');
-        $this         
+        $this
             ->method('GET')
-            ->path('repos/{{owner}}/{{repo}}/zipball/{{version}}');        
+            ->path('v3/market/author/sales');    
     }
 }

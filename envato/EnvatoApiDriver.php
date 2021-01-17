@@ -7,7 +7,7 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Api\Github;
+namespace Arikaim\Modules\Api\Envato;
 
 use Arikaim\Core\Arikaim;
 use Arikaim\Modules\Api\AbstractApiClient;
@@ -16,9 +16,9 @@ use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Modules\Api\Interfaces\ApiClientInterface;
 
 /**
- * GitHub api driver class
+ * Envato api driver class
  */
-class GitHubApiDriver extends AbstractApiClient implements DriverInterface, ApiClientInterface
+class EnvatoApiDriver extends AbstractApiClient implements DriverInterface, ApiClientInterface
 {   
     use Driver;
 
@@ -27,7 +27,7 @@ class GitHubApiDriver extends AbstractApiClient implements DriverInterface, ApiC
      */
     public function __construct()
     {
-        $this->setDriverParams('github-api','repository','GitHubApiDriver','Github Api driver');      
+        $this->setDriverParams('envato','orders','EnvatoApiDriver','Envato Api driver');      
     }
 
     /**
@@ -49,9 +49,7 @@ class GitHubApiDriver extends AbstractApiClient implements DriverInterface, ApiC
     public function getAuthHeaders(): ?array
     {
         return [
-            'Authorization: token ' . $this->oauthToken,
-            'Accept: application/vnd.github.nebula-preview+json',
-            'User-Agent: Arikaim CMS'
+            'Authorization: Bearer ' . $this->oauthToken
         ];
     }
 
@@ -67,14 +65,14 @@ class GitHubApiDriver extends AbstractApiClient implements DriverInterface, ApiC
             $property
                 ->title('Base Url')
                 ->type('text')
-                ->default('https://api.github.com/')
-                ->value('https://api.github.com/')
+                ->default('https://api.envato.com/')
+                ->value('https://api.envato.com/')
                 ->readonly(true);              
         }); 
         
         $properties->property('token',function($property) {
             $property
-                ->title('OAuth2 Access Token')
+                ->title('Personal Token')
                 ->type('text')              
                 ->value('');                         
         }); 

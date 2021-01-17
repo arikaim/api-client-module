@@ -22,7 +22,7 @@ class GetLatestRelease extends AbstractApiFunction implements ApiFunctionInterfa
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         $this
             ->method('GET')

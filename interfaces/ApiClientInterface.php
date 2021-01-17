@@ -17,22 +17,42 @@ interface ApiClientInterface
     /**
      * Get authorization headers or false if api not uses header for auth
      *
-     * @return array|false
+     * @return array|null
     */
-    public function getAuthHeaders();
+    public function getAuthHeaders(): ?array;
 
     /**
      * Should return api function classes namespace
      *
      * @return string
      */
-    public function getFunctionsNamespace();
+    public function getFunctionsNamespace(): string;
 
     /**
-     * Call api funciton
+     * Set functions namespace
+     *
+     * @param string $namespace
+     * @return void
+     */
+    public function setFunctionsNamespace(string $namespace): void;
+
+    /**
+     * Create api function object 
      *
      * @param string $apiFunctionClass
-     * @return mixed|false
+     * @param array|null $queryParams
+     * @param array|null $pathParams 
+     * @return ApiFunctionInterface|null
+     */
+    public function createApiFunction(string $class, ?array $queryParams = null, ?array $pathParams = null);
+
+    /**
+     * Call api function
+     *
+     * @param string $class
+     * @param array|null $queryParams
+     * @param array|null $pathParams
+     * @return ApiCallResponse|false
     */
-    public function call($apiFunctionClass);
+    public function call(string $class, ?array $queryParams = null, ?array $pathParams = null);
 }

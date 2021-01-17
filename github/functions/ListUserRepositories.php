@@ -22,7 +22,7 @@ class ListUserRepositories extends AbstractApiFunction implements ApiFunctionInt
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         $this
             ->method('GET')

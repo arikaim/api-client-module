@@ -13,9 +13,9 @@ use Arikaim\Modules\Api\AbstractApiFunction;
 use Arikaim\Modules\Api\Interfaces\ApiFunctionInterface;
 
 /**
- * DownloadRepository api call
+ * DownloadFile api call
  */
-class DownloadRepository extends AbstractApiFunction implements ApiFunctionInterface
+class DownloadFile extends AbstractApiFunction implements ApiFunctionInterface
 {
     /**
      * Initialize api funciton
@@ -25,8 +25,8 @@ class DownloadRepository extends AbstractApiFunction implements ApiFunctionInter
     public function init(): void
     {
         $this->addHeader('Accept: application/vnd.github.v3.raw');
-        $this         
+        $this
             ->method('GET')
-            ->path('repos/{{owner}}/{{repo}}/zipball/{{version}}');        
+            ->path('repos/{{owner}}/{{repo}}/contents/{{path}}');          
     }
 }
