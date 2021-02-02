@@ -22,14 +22,14 @@ abstract class AbstractApiClient implements ApiClientInterface
     /**
      * OAuth token
      *
-     * @var string
+     * @var string|null
     */
     protected $oauthToken = null;
     
     /**
      * OAuth token secret
      *
-     * @var string
+     * @var string|null
     */
     protected $oauthTokenSecret = null;
 
@@ -54,6 +54,17 @@ abstract class AbstractApiClient implements ApiClientInterface
     {                  
     }
 
+    /**
+     * Get error
+     *
+     * @param mixed $response
+     * @return string|null
+     */
+    public function getError($response): ?string
+    {
+        return null;
+    }
+    
     /**
      * Get authorization headers or false if api not uses header for auth
      *

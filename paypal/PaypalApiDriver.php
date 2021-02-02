@@ -16,9 +16,9 @@ use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Modules\Api\Interfaces\ApiClientInterface;
 
 /**
- * Envato api driver class
+ * Paypal api driver class
  */
-class EnvatoApiDriver extends AbstractApiClient implements DriverInterface, ApiClientInterface
+class PaypalApiDriver extends AbstractApiClient implements DriverInterface, ApiClientInterface
 {   
     use Driver;
 
@@ -54,21 +54,6 @@ class EnvatoApiDriver extends AbstractApiClient implements DriverInterface, ApiC
     }
 
     /**
-     * Get error
-     *
-     * @param mixed $response
-     * @return string|null
-     */
-    public function getError($response): ?string
-    {
-        if (\is_array($response) == true) {
-            return $response['error'] ?? null;
-        }
-
-        return null;
-    }
-
-    /**
      * Create driver config properties array
      *
      * @param Arikaim\Core\Collection\Properties $properties
@@ -76,28 +61,6 @@ class EnvatoApiDriver extends AbstractApiClient implements DriverInterface, ApiC
      */
     public function createDriverConfig($properties)
     {
-        $properties->property('baseUrl',function($property) {
-            $property
-                ->title('Base Url')
-                ->type('text')
-                ->default('https://api.envato.com/')
-                ->value('https://api.envato.com/')
-                ->readonly(true);              
-        }); 
         
-        $properties->property('token',function($property) {
-            $property
-                ->title('Personal Token')
-                ->type('text')   
-                ->required(true)           
-                ->value('');                         
-        }); 
-
-        $properties->property('username',function($property) {
-            $property
-                ->title('Author username')
-                ->type('text')              
-                ->value('');                         
-        }); 
     }
 }

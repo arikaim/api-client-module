@@ -15,6 +15,14 @@ namespace Arikaim\Modules\Api\Interfaces;
 interface ApiClientInterface 
 {  
     /**
+     * Get error
+     *
+     * @param mixed $response
+     * @return string|null
+     */
+    public function getError($response): ?string;
+
+    /**
      * Get authorization headers or false if api not uses header for auth
      *
      * @return array|null

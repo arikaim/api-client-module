@@ -125,9 +125,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
 
     /**
      * Call api function
-     *`   
-     * @param array|null $params
-     * @param int|null $paramsType
+     *
      * @return ApiCallResponse
     */
     public function call()
@@ -302,6 +300,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     /**
      * Set query params
      *
+     * @param array $params
      * @return void
      */
     public function setQueryParams(array $params): void
@@ -312,6 +311,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     /**
      * Set query params
      *
+     * @param array $params
      * @return void
      */
     public function setPathParams(array $params): void
