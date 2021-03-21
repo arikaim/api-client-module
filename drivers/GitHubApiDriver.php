@@ -39,6 +39,7 @@ class GitHubApiDriver extends AbstractApiClient implements DriverInterface, ApiC
     {
         $this->setBaseUrl($properties->getValue('baseUrl'));    
         $this->setOauthToken($properties->getValue('token'));        
+        $this->setFunctionsNamespace('Arikaim\\Modules\\Api\\Github\\Functions\\');  
     }
 
     /**

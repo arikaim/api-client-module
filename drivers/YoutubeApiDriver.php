@@ -51,7 +51,7 @@ class YoutubeApiDriver implements DriverInterface, ApiServiceInterface
         $client = new \Google\Client();
         $client->setDeveloperKey($apiKey);
 
-        $this->service = new \Google_Service_YouTube($client);    
+        $this->service = new \Google_Service_YouTube($client);   
     }
 
     /**
