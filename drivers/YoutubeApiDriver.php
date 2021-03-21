@@ -9,10 +9,14 @@
 */
 namespace Arikaim\Modules\Api\Drivers;
 
+use Google_Service_YouTube;
+use Google\Client;
+
 use Arikaim\Core\Arikaim;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Modules\Api\Interfaces\ApiServiceInterface;
+use Exception;
 
 /**
  * Youtube api driver class
@@ -48,6 +52,31 @@ class YoutubeApiDriver implements DriverInterface, ApiServiceInterface
         $client->setDeveloperKey($apiKey);
 
         $this->service = new \Google_Service_YouTube($client);    
+    }
+
+    /**
+     * Check api settings
+     *
+     * @return boolean
+     */
+    public function checkConnection(): bool
+    {
+        $service = $this->getService();
+
+        if (\is_object($service) == false) {
+            return false;
+        }
+
+        try {
+            $result = $service->search->listSearch('snippet',[
+                'maxResults' => 1,
+                'q'          => 'video',
+                'type'       => 'video']);
+        } catch (Exception $e) {
+            return false;
+        }
+      
+        return true;
     }
 
     /**

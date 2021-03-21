@@ -17,7 +17,14 @@ interface ApiServiceInterface
     /**
      * Get api service
      *
-     * @return object
+     * @return object|null
     */
     public function getService();
+
+    /**
+     * Check api settings
+     *
+     * @return boolean
+     */
+    public function checkConnection(): bool;
 }

@@ -38,7 +38,8 @@ class EnvatoApiDriver extends AbstractApiClient implements DriverInterface, ApiC
     public function initDriver($properties)
     {
         $this->setBaseUrl($properties->getValue('baseUrl'));    
-        $this->setOauthToken($properties->getValue('token'));        
+        $this->setOauthToken($properties->getValue('token')); 
+        $this->setFunctionsNamespace('Arikaim\\Modules\\Api\\Envato\\Functions\\');       
     }
 
     /**

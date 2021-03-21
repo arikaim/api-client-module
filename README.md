@@ -4,6 +4,7 @@
 
 #### Api client drivers
  * Github
+ * YoutubeApiDriver
 
 #### Requirements   
   * [Arikaim CMS](https://github.com/arikaim/arikaim)

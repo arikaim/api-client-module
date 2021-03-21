@@ -81,7 +81,7 @@ abstract class AbstractApiClient implements ApiClientInterface
     {
         $defaultNamespace = Factory::getClassNamespace(static::class) . "\\Functions\\";
 
-        return $this->functionsNamespace ??$defaultNamespace;
+        return $this->functionsNamespace ?? $defaultNamespace;
     }
 
     /**
