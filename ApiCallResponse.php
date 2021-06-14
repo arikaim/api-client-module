@@ -9,6 +9,7 @@
 */
 namespace Arikaim\Modules\Api;
 
+use Psr\Http\Message\ResponseInterface;
 use Arikaim\Core\Utils\Utils;
 
 /**
@@ -25,6 +26,8 @@ class ApiCallResponse
 
     /**
      * Constructor
+     * 
+     * @param mixed $response
      */
     public function __construct($response)
     {
@@ -34,15 +37,16 @@ class ApiCallResponse
     /**
      * Get response as array
      *
-     * @return array|false
+     * @return array
      */
     public function toArray()
     {
         if (\is_array($this->apiResponse) == true) {
             return $this->apiResponse;
         }
-        
-        return (Utils::isJson($this->apiResponse) == true) ? \json_decode($this->apiResponse,true) : false;
+        $result = ($this->apiResponse instanceof ResponseInterface) ? $this->apiResponse->getBody() : $this->apiResponse;
+          
+        return (Utils::isJson($result) == true) ? \json_decode($result,true) : [];
     }
 
     /**
