@@ -5,7 +5,7 @@
     "class": "Api",
     "package-type": "module",
     "description": "REST Api client.",
-    "version": "1.1.7",   
+    "version": "1.2.0",   
     "repository": "https://github.com/arikaim/api-client-module.git",
     "require": {
         "composer": [              
