@@ -5,11 +5,10 @@
     "class": "Api",
     "package-type": "module",
     "description": "REST Api client.",
-    "version": "1.1.6",   
+    "version": "1.1.7",   
     "repository": "https://github.com/arikaim/api-client-module.git",
     "require": {
-        "composer": [  
-            "google/apiclient"         
+        "composer": [              
         ]
     }
 }

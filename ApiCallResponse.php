@@ -39,7 +39,7 @@ class ApiCallResponse
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         if (\is_array($this->apiResponse) == true) {
             return $this->apiResponse;

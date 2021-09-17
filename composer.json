@@ -11,9 +11,7 @@
     }],
     "require": {
         "php": ">=7.1",
-        "arikaim/installer": "*", 
-        "google/apiclient": "^2.7.0",
-        "paypal/paypal-checkout-sdk": "^1.0.1"
+        "arikaim/installer": "*"
     },
     "extra": {
         "path": "api"
