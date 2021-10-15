@@ -14,29 +14,26 @@ use Arikaim\Core\Utils\Curl;
 use Arikaim\Modules\Api\ApiCallResponse;
 use Arikaim\Modules\Api\Interfaces\ApiFunctionInterface;
 use Arikaim\Core\Interfaces\HttpClientInterface;
+use Arikaim\Modules\Api\Interfaces\ApiClientInterface;
 
 /**
  * Abstract base class for each api function.
  */
 abstract class AbstractApiFunction implements ApiFunctionInterface
 {
-    const QUERY_PARAMS    = 0;
-    const URL_PATH_PARAMS = 1;
-    const JSON_PARAMS     = 2;
+    /**
+     * Request params type (query, path or json)
+     *
+     * @var string
+     */
+    protected $paramsType;
 
     /**
-     * Requets query params
+     * Requets params
      *
      * @var array
      */
-    protected $queryParams = [];
-
-    /**
-     * Requets path params
-     *
-     * @var array
-     */
-    protected $pathParams = [];
+    protected $params = [];
 
     /**
      * Api request base url
@@ -74,6 +71,20 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     protected $httpClient;
 
     /**
+     * Api client
+     *
+     * @var ApiClientInterface|null
+     */
+    protected $apiClient;
+
+    /**
+     * Post fields
+     *
+     * @var array|null
+     */
+    protected $postFields = null;
+
+    /**
     * Constructor
     *
     * @param string $baseUrl
@@ -84,15 +95,41 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
         string $baseUrl, 
         array $headers = [], 
         string $method = 'GET', 
-        ?HttpClientInterface $client = null
+        ?HttpClientInterface $client = null,
+        ?ApiClientInterface $apiClient = null
     )
     {
         $this->setBaseUrl($baseUrl);
         $this->setHeaders($headers);
         $this->method($method);
         $this->httpClient = $client;
-
+        $this->apiClient = $apiClient;
+        $this->paramsType = ApiFunctionInterface::QUERY_PARAMS;
         $this->init();
+    }
+
+    /**
+     * Set post fields
+     *
+     * @param array|null $data
+     * @return Self
+     */
+    public function postFields(?array $data): void
+    {
+        $this->postFields = $data;
+    }
+
+    /**
+     * Set params type
+     *
+     * @param string $type
+     * @return Self
+     */
+    public function paramsType(string $type)
+    {
+        $this->paramsType = $type;
+
+        return $this;
     }
 
     /**
@@ -131,13 +168,23 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     public function call()
     {
         $url = $this->getRequestUrl();
+        $method = $this->getMethod();
+     
+        $headers = ($this->apiClient == null) ? $this->headers : $this->apiClient->getAuthHeaders([
+            'url'      => $url,          
+            'base_url' => $this->getBaseUrl(),
+            'url_path' => $this->getUrlPath(), 
+            'method'   => $method,
+            'params'   => $this->params
+        ]);
+        
         if (empty($this->httpClient) == true) {
-            $response = Curl::request($url,$this->getMethod(),null,$this->headers);
+            $response = Curl::request($url,$method,$this->postFields,$headers);
         } else {
-            $response = $this->httpClient->request($url,$this->getMethod(),$this->headers);
+            $response = $this->httpClient->request($url,$method,$headers);
         }
       
-        return new ApiCallResponse($response);
+        return new ApiCallResponse($response,$this->apiClient->getErrorFieldName());
     }
 
     /**
@@ -217,30 +264,6 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     }
 
     /**
-     * Get params
-     *
-     * @return array
-     */
-    public function getPathParams(): array
-    {
-        return $this->pathParams;
-    }
-
-    /**
-     * Set path param
-     *
-     * @param string $name
-     * @param string $value
-     * @return ApiFunction
-     */
-    public function pathParam(string $name, string $value) 
-    {
-        $this->pathParams[$name] = $value;
-
-        return $this;
-    }
-
-    /**
      * Set request param
      *
      * @param string $name
@@ -249,7 +272,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function param(string $name, string $value)
     {
-        $this->queryParams[$name] = $value;
+        $this->params[$name] = $value;
 
         return $this;
     }
@@ -271,7 +294,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function getUrlPath(): string
     {      
-        return Text::render($this->path,$this->pathParams);  
+        return Text::render($this->path,$this->params);  
     }
     
     /**
@@ -279,54 +302,33 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      *
      * @return array
      */
-    public function getQueryParams(): array
+    public function getParams(): array
     {        
-        return $this->queryParams;
+        return $this->params;
     }
 
     /**
-     * Set query params
+     * Set params
      *
      * @param array $params
      * @return ApiFunction
      */
-    public function withQueryParams(array $params)
+    public function withParams(array $params)
     {        
-        $this->queryParams = $params;
+        $this->params = $params;
 
         return $this;
     }
 
     /**
-     * Set query params
+     * Set params
      *
      * @param array $params
      * @return void
      */
-    public function setQueryParams(array $params): void
+    public function setParams(array $params): void
     {
-        $this->queryParams = $params;
-    }
-
-    /**
-     * Set query params
-     *
-     * @param array $params
-     * @return void
-     */
-    public function setPathParams(array $params): void
-    {
-        $this->pathParams = $params;
-    }
-
-    /**
-     * Create query request params
-     *
-     * @return string
-     */
-    public function createQueryParams(): string
-    {
-        return \http_build_query($this->queryParams);
+        $this->params = $params;
     }
 
     /**
@@ -335,10 +337,12 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      * @return string
      */
     public function buildRequestUrl(): string
-    {       
-        $queryParams = $this->createQueryParams();
-        $queryParams = (empty($queryParams) == false) ? '?' . $queryParams : '';
-              
-        return $this->getUrlPath() . $queryParams;
+    {               
+        if ($this->paramsType == ApiFunctionInterface::QUERY_PARAMS) {
+            $queryParams = \http_build_query($this->params);
+            $queryParams = (empty($queryParams) == false) ? '?' . $queryParams : '';
+        }
+                    
+        return $this->getUrlPath() . $queryParams ?? '';
     }
 }

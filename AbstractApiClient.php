@@ -68,9 +68,20 @@ abstract class AbstractApiClient implements ApiClientInterface
     /**
      * Get authorization headers or false if api not uses header for auth
      *
+     * @param array|null $params
      * @return array|null
     */
-    abstract public function getAuthHeaders(): ?array;
+    abstract public function getAuthHeaders(?array $params = null): ?array;
+
+    /**
+     * Get error field name
+     *
+     * @return string|null
+    */
+    public function getErrorFieldName(): ?string
+    {
+        return null;
+    }
 
     /**
      * Api function classes namespace
@@ -99,31 +110,30 @@ abstract class AbstractApiClient implements ApiClientInterface
      * Create api function object 
      *
      * @param string $class
-     * @param array|null $queryParams
-     * @param array|null $pathParams 
+     * @param array|null $params    
+     * @param array|null $postFields    
      * @throws Exception
      * @return ApiFunctionInterface|null
      */
-    public function createApiFunction(string $class, ?array $queryParams = null, ?array $pathParams = null)
+    public function createApiFunction(string $class, ?array $params = null, ?array $postFields = null)
     {
         if (\class_exists($class) == false) {
             $class = $this->getFunctionsNamespace() . $class;
         }
       
-        $apiFunction = new $class($this->getBaseUrl(),$this->getAuthHeaders());
+        $apiFunction = new $class($this->getBaseUrl(),[],'GET',null,$this);
         if (($apiFunction instanceof ApiFunctionInterface) == false) {
-            throw new Exception('Not vlaid api functin class ' . $class);
+            throw new Exception('Not vlaid api function class ' . $class);
           
             return null;
         }
 
-        if (\is_array($queryParams) == true) {
-            $apiFunction->setQueryParams($queryParams);
-        }
-        if (\is_array($pathParams) == true) {
-            $apiFunction->setPathParams($pathParams);
-        }
+        $apiFunction->postFields($postFields);
 
+        if (\is_array($params) == true) {
+            $apiFunction->setParams($params);
+        }
+       
         return $apiFunction;        
     }  
 
@@ -131,18 +141,15 @@ abstract class AbstractApiClient implements ApiClientInterface
      * Call api function
      *
      * @param string $class
-     * @param array|null $queryParams
-     * @param array|null $pathParams
+     * @param array|null $params   
+     * @param array|null $postFields   
      * @return ApiCallResponse|false
     */
-    public function call(string $class, ?array $queryParams = null, ?array $pathParams = null)
+    public function call(string $class, ?array $params = null, ?array $postFields = null)
     {
-        $apiFunction = $this->createApiFunction($class,$queryParams,$pathParams);
-        if (empty($apiFunction) == true) {
-            return false;
-        }
-
-        return $apiFunction->call();    
+        $apiFunction = $this->createApiFunction($class,$params,$postFields);
+       
+        return (empty($apiFunction) == true) ? false : $apiFunction->call();    
     }
     
     /**

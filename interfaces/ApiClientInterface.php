@@ -15,6 +15,13 @@ namespace Arikaim\Modules\Api\Interfaces;
 interface ApiClientInterface 
 {  
     /**
+     * Get error field name
+     *
+     * @return string|null
+    */
+    public function getErrorFieldName(): ?string;
+
+    /**
      * Get error
      *
      * @param mixed $response
@@ -25,9 +32,10 @@ interface ApiClientInterface
     /**
      * Get authorization headers or false if api not uses header for auth
      *
+     * @param array|null $params
      * @return array|null
     */
-    public function getAuthHeaders(): ?array;
+    public function getAuthHeaders(?array $params = null): ?array;
 
     /**
      * Should return api function classes namespace
@@ -48,19 +56,19 @@ interface ApiClientInterface
      * Create api function object 
      *
      * @param string $apiFunctionClass
-     * @param array|null $queryParams
-     * @param array|null $pathParams 
+     * @param array|null $params   
+     * @param array|null $postFields   
      * @return ApiFunctionInterface|null
      */
-    public function createApiFunction(string $class, ?array $queryParams = null, ?array $pathParams = null);
+    public function createApiFunction(string $class, ?array $params = null, ?array $postFields = null);
 
     /**
      * Call api function
      *
      * @param string $class
-     * @param array|null $queryParams
-     * @param array|null $pathParams
+     * @param array|null $params 
+     * @param array|null $postFields   
      * @return ApiCallResponse|false
     */
-    public function call(string $class, ?array $queryParams = null, ?array $pathParams = null);
+    public function call(string $class, ?array $params = null, ?array $postFields = null);
 }

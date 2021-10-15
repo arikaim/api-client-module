@@ -14,6 +14,18 @@ namespace Arikaim\Modules\Api\Interfaces;
  */
 interface ApiFunctionInterface 
 {  
+    const QUERY_PARAMS    = 'query';
+    const URL_PATH_PARAMS = 'path';
+    const JSON_PARAMS     = 'json';
+  
+    /**
+     * Set post fields
+     *
+     * @param array|null $data
+     * @return Self
+     */
+    public function postFields(?array $data): void;
+    
     /**
      * Get request method
      *
@@ -40,7 +52,7 @@ interface ApiFunctionInterface
      *
      * @return array
      */
-    public function getPathParams(): array;
+    public function getParams(): array;
 
     /**
      * Set params
@@ -48,15 +60,15 @@ interface ApiFunctionInterface
      * @param array $params
      * @return void
      */
-    public function setQueryParams(array $params): void;
+    public function setParams(array $params): void;
 
     /**
-     * Set params
+     * Set params type
      *
-     * @param array $params
-     * @return void
+     * @param string $type
+     * @return Self
      */
-    public function setPathParams(array $params): void;
+    public function paramsType(string $type);
 
     /**
      * Create requets url from path and params

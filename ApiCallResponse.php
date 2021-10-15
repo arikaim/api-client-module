@@ -25,13 +25,43 @@ class ApiCallResponse
     protected $apiResponse;
 
     /**
+     * Error response field name
+     *
+     * @var string|null
+     */
+    protected $errorField = null;
+
+    /**
      * Constructor
      * 
      * @param mixed $response
      */
-    public function __construct($response)
+    public function __construct($response, ?string $errorField = null)
     {
         $this->apiResponse = $response;
+        $this->errorField = $errorField;
+    }
+
+    /**
+     * Get error message
+     *
+     * @return string|null
+     */
+    public function getError(): ?string
+    {
+        $data = $this->toArray();
+
+        return (empty($this->errorField) == true) ? null : $data[$this->errorField] ?? null;
+    }
+
+    /**
+     * Return true if api call response has error
+     *
+     * @return boolean
+     */
+    public function hasError(): bool
+    {
+        return !empty($this->getError());
     }
 
     /**
