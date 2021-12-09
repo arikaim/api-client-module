@@ -308,7 +308,18 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function getUrlPath(): string
     {      
-        return Text::render($this->path,$this->params);  
+        $tokens = explode('/',$this->path ?? '');
+        $result = '';
+
+        foreach ($tokens as $token) {
+            $value = Text::render($token,$this->params);  
+            
+            if (empty($value) == false) {
+                $result .= (empty($result) == true) ? $value : '/'. $value;
+            }           
+        }
+        
+        return $result;
     }
     
     /**
