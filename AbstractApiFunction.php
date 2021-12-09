@@ -147,17 +147,18 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function downloadFile(?string $fileName = null)
     {
-        $url = $this->getRequestUrl();
-        $result = false;
+        $url = $this->getRequestUrl();    
+        $headers = $this->getHeaders();
+
         if (empty($this->httpClient) == true) {
             if (empty($fileName) == true) {             
-                $result = Curl::getFileContent($url,$this->getMethod(),$this->headers);
+                $result = Curl::getFileContent($url,$this->getMethod(),$headers);
             } else {
-                $result = Curl::downloadFile($url,$fileName,$this->getMethod(),$this->headers);
+                $result = Curl::downloadFile($url,$fileName,$this->getMethod(),$headers);
             }
         } 
 
-        return $result;
+        return $result ?? false;
     }
 
     /**
@@ -169,15 +170,8 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     {
         $url = $this->getRequestUrl();
         $method = $this->getMethod();
-     
-        $headers = ($this->apiClient == null) ? $this->headers : $this->apiClient->getAuthHeaders([
-            'url'      => $url,          
-            'base_url' => $this->getBaseUrl(),
-            'url_path' => $this->getUrlPath(), 
-            'method'   => $method,
-            'params'   => $this->params
-        ]);
-        
+        $headers = $this->getHeaders();
+
         if (empty($this->httpClient) == true) {
             $response = Curl::request($url,$method,$this->postFields,$headers);
         } else {
@@ -206,14 +200,34 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     }
 
     /**
+     * Get request headers
+     *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        $headers = ($this->apiClient == null) ? $this->headers : $this->apiClient->getAuthHeaders([
+            'url'      => $this->getRequestUrl(),          
+            'base_url' => $this->getBaseUrl(),
+            'url_path' => $this->getUrlPath(), 
+            'method'   => $this->getMethod(),
+            'params'   => $this->params ?? []
+        ]); 
+        
+        return \array_merge($headers,$this->headers);
+    }
+
+    /**
      * Add request header
      *
      * @param string $header
-     * @return void
+     * @return Self
      */
-    public function addHeader(string $header): void
+    public function addHeader(string $header)
     {
-        \array_push($this->headers,$header);
+        $this->headers[] = $header;
+
+        return $this;
     }
 
     /**

@@ -89,9 +89,9 @@ interface ApiFunctionInterface
      * Add request header
      *
      * @param string $header
-     * @return void
+     * @return Self
      */
-    public function addHeader(string $header): void;
+    public function addHeader(string $header);
 
     /**
      * Call api function
