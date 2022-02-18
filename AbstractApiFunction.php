@@ -214,7 +214,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
             'params'   => $this->params ?? []
         ]); 
         
-        return \array_merge($headers,$this->headers);
+        return (\is_array($headers) == true) ? \array_merge($headers,$this->headers) : $this->headers;
     }
 
     /**
@@ -362,12 +362,13 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      * @return string
      */
     public function buildRequestUrl(): string
-    {               
+    {              
+        $queryParams = ''; 
         if ($this->paramsType == ApiFunctionInterface::QUERY_PARAMS) {
             $queryParams = \http_build_query($this->params);
             $queryParams = (empty($queryParams) == false) ? '?' . $queryParams : '';
         }
                     
-        return $this->getUrlPath() . $queryParams ?? '';
+        return $this->getUrlPath() . $queryParams;
     }
 }
