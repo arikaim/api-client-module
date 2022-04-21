@@ -155,10 +155,10 @@ abstract class AbstractApiClient implements ApiClientInterface
     /**
      * Set OAuth token
      *
-     * @param string $url
+     * @param string $token
      * @return void
      */
-    public function setOauthToken($token)
+    public function setOauthToken(?string $token): void
     {
         $this->oauthToken = $token;
     }

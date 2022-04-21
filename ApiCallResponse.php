@@ -39,7 +39,7 @@ class ApiCallResponse
     public function __construct($response, ?string $errorField = null)
     {
         $this->apiResponse = $response;
-        $this->errorField = $errorField;
+        $this->errorField = $errorField ?? 'error';
     }
 
     /**
@@ -51,7 +51,11 @@ class ApiCallResponse
     {
         $data = $this->toArray();
 
-        return (empty($this->errorField) == true) ? null : $data[$this->errorField] ?? null;
+        $error = (empty($this->errorField) == true) ? null : $data[$this->errorField] ?? null;
+        $error = (\is_array($error) == true) ? $error[0] : $error;
+        $error = (\is_array($error) == true) ? $error['message'] : $error;
+        
+        return $error;
     }
 
     /**
@@ -77,6 +81,18 @@ class ApiCallResponse
         $result = ($this->apiResponse instanceof ResponseInterface) ? $this->apiResponse->getBody() : $this->apiResponse;
           
         return (Utils::isJson($result) == true) ? \json_decode($result,true) : [];
+    }
+
+    /**
+     * Get response field
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getField(string $name)
+    {
+        $data = $this->toArray();
+        return $data[$name] ?? null;
     }
 
     /**

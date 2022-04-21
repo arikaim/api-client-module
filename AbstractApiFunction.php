@@ -120,6 +120,16 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     }
 
     /**
+     * Get post fields
+     *
+     * @return array|null
+     */
+    public function getPostFields(): ?array
+    {
+        return $this->postFields;
+    }
+
+    /**
      * Set params type
      *
      * @param string $type
@@ -211,7 +221,8 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
             'base_url' => $this->getBaseUrl(),
             'url_path' => $this->getUrlPath(), 
             'method'   => $this->getMethod(),
-            'params'   => $this->params ?? []
+            'params'   => $this->params ?? [],
+            'post_fields' => (\is_array($this->postFields) == true) ? $this->postFields : []
         ]); 
         
         return (\is_array($headers) == true) ? \array_merge($headers,$this->headers) : $this->headers;
