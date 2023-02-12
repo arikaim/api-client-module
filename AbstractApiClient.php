@@ -34,6 +34,13 @@ abstract class AbstractApiClient implements ApiClientInterface
     protected $oauthTokenSecret = null;
 
     /**
+     * Api key
+     *
+     * @var string|null
+     */
+    protected $apiKey = null;
+
+    /**
      * Api request base url
      *
      * @var string
@@ -48,10 +55,23 @@ abstract class AbstractApiClient implements ApiClientInterface
     protected $functionsNamespace = null;
 
     /**
+     * Default request params avaliable form all api calls
+     *
+     * @var array
+     */
+    protected $defaultRequestParams = [];
+
+    /**
      * Constructor
      */
     public function __construct()
-    {                  
+    {  
+        $this->oauthToken = null;   
+        $this->oauthTokenSecret = null;    
+        $this->baseUrl = '';
+        $this->functionsNamespace = null;
+        $this->apiKey = null;
+        $this->defaultRequestParams = [];
     }
 
     /**
@@ -124,8 +144,6 @@ abstract class AbstractApiClient implements ApiClientInterface
         $apiFunction = new $class($this->getBaseUrl(),[],'GET',null,$this);
         if (($apiFunction instanceof ApiFunctionInterface) == false) {
             throw new Exception('Not vlaid api function class ' . $class);
-          
-            return null;
         }
 
         $apiFunction->postFields($postFields);
@@ -182,5 +200,49 @@ abstract class AbstractApiClient implements ApiClientInterface
     public function getBaseUrl()
     {
         return $this->baseUrl;
+    }
+
+    /**
+     * Get api key
+     *
+     * @param string|null $apiKey
+     * @return string|null
+     */
+    public function getApiKey(?string $apiKey = null): ?string
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * Set api key
+     *
+     * @param string $key
+     * @return void
+     */
+    public function setApiKey(string $key): void
+    {
+        $this->apiKey = $key;
+    }
+
+    /**
+     * Get default requets params
+     *
+     * @return array
+     */
+    public function getDefaultRequestParams(): array
+    {
+        return $this->defaultRequestParams;
+    }
+
+    /**
+     * Set default request param
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function requestParam(string $key, $value): void
+    {
+        $this->defaultRequestParams[$key] = $value;
     }
 }

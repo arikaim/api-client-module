@@ -38,6 +38,21 @@ interface ApiClientInterface
     public function getAuthHeaders(?array $params = null): ?array;
 
     /**
+     * Get api key
+     *
+     * @param string|null $apiKey
+     * @return string|null
+     */
+    public function getApiKey(?string $apiKey = null): ?string;
+
+    /**
+     * Get default requets params
+     *
+     * @return array
+     */
+    public function getDefaultRequestParams(): array;
+    
+    /**
      * Should return api function classes namespace
      *
      * @return string

@@ -105,6 +105,8 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
         $this->httpClient = $client;
         $this->apiClient = $apiClient;
         $this->paramsType = ApiFunctionInterface::QUERY_PARAMS;
+        $this->params = [];
+
         $this->init();
     }
 
@@ -221,7 +223,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
             'base_url' => $this->getBaseUrl(),
             'url_path' => $this->getUrlPath(), 
             'method'   => $this->getMethod(),
-            'params'   => $this->params ?? [],
+            'params'   => $this->getParams(),
             'post_fields' => (\is_array($this->postFields) == true) ? $this->postFields : []
         ]); 
         
@@ -323,7 +325,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
         $result = '';
 
         foreach ($tokens as $token) {
-            $value = Text::render($token,$this->params);  
+            $value = Text::render($token,$this->getParams());  
             
             if (empty($value) == false) {
                 $result .= (empty($result) == true) ? $value : '/'. $value;
@@ -340,7 +342,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
      */
     public function getParams(): array
     {        
-        return $this->params;
+        return \array_merge($this->params,$this->apiClient->getDefaultRequestParams());
     }
 
     /**
@@ -376,7 +378,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     {              
         $queryParams = ''; 
         if ($this->paramsType == ApiFunctionInterface::QUERY_PARAMS) {
-            $queryParams = \http_build_query($this->params);
+            $queryParams = \http_build_query($this->getParams());
             $queryParams = (empty($queryParams) == false) ? '?' . $queryParams : '';
         }
                     
