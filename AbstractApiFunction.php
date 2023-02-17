@@ -15,12 +15,17 @@ use Arikaim\Modules\Api\ApiCallResponse;
 use Arikaim\Modules\Api\Interfaces\ApiFunctionInterface;
 use Arikaim\Core\Interfaces\HttpClientInterface;
 use Arikaim\Modules\Api\Interfaces\ApiClientInterface;
+use Arikaim\Modules\Api\ApiFunctionDescriptor;
+
+use Arikaim\Core\Collection\Traits\Descriptor;
 
 /**
  * Abstract base class for each api function.
  */
 abstract class AbstractApiFunction implements ApiFunctionInterface
 {
+    use Descriptor;
+
     /**
      * Request params type (query, path or json)
      *
@@ -106,6 +111,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
         $this->apiClient = $apiClient;
         $this->paramsType = ApiFunctionInterface::QUERY_PARAMS;
         $this->params = [];
+        $this->setDescriptorClass(ApiFunctionDescriptor::class);
 
         $this->init();
     }
