@@ -143,7 +143,7 @@ abstract class AbstractApiClient implements ApiClientInterface
       
         $apiFunction = new $class($this->getBaseUrl(),[],'GET',null,$this);
         if (($apiFunction instanceof ApiFunctionInterface) == false) {
-            throw new Exception('Not vlaid api function class ' . $class);
+            throw new Exception('Not valid api function class ' . $class);
         }
 
         $apiFunction->postFields($postFields);
