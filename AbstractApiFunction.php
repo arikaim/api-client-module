@@ -95,13 +95,15 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
     * @param string $baseUrl
     * @param array $headers
     * @param string $method
+    * @param array|null $params
     */
     public function __construct(
         string $baseUrl, 
         array $headers = [], 
         string $method = 'GET', 
         ?HttpClientInterface $client = null,
-        ?ApiClientInterface $apiClient = null
+        ?ApiClientInterface $apiClient = null,
+        ?array $params = []
     )
     {
         $this->setBaseUrl($baseUrl);
@@ -110,7 +112,7 @@ abstract class AbstractApiFunction implements ApiFunctionInterface
         $this->httpClient = $client;
         $this->apiClient = $apiClient;
         $this->paramsType = ApiFunctionInterface::QUERY_PARAMS;
-        $this->params = [];
+        $this->params = $params ?? [];
         $this->setDescriptorClass(ApiFunctionDescriptor::class);
 
         $this->init();

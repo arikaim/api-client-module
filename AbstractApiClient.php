@@ -141,17 +141,13 @@ abstract class AbstractApiClient implements ApiClientInterface
             $class = $this->getFunctionsNamespace() . $class;
         }
       
-        $apiFunction = new $class($this->getBaseUrl(),[],'GET',null,$this);
+        $apiFunction = new $class($this->getBaseUrl(),[],'GET',null,$this,$params);
         if (($apiFunction instanceof ApiFunctionInterface) == false) {
             throw new Exception('Not valid api function class ' . $class);
         }
 
         $apiFunction->postFields($postFields);
 
-        if (\is_array($params) == true) {
-            $apiFunction->setParams($params);
-        }
-       
         return $apiFunction;        
     }  
 
