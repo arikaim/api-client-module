@@ -52,7 +52,7 @@ class ApiCallResponse
         $data = $this->toArray();
 
         $error = (empty($this->errorField) == true) ? null : $data[$this->errorField] ?? null;
-        $error = (\is_array($error) == true) ? $error[0] : $error;
+        $error = (\is_array($error) == true) ? $error[0] ?? null : $error;
         $error = (\is_array($error) == true) ? $error['message'] : $error;
         
         return $error;
